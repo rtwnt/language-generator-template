@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
     implementation 'com.opencsv:opencsv:5.5.2'
     implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'org.thejavaguy:rng:0.2.0'
 
     flywayMigration 'org.postgresql:postgresql:42.2.14'
     jooqGenerator 'org.postgresql:postgresql:42.2.14'
