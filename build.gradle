@@ -19,6 +19,7 @@ configurations {
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
+    implementation 'com.opencsv:opencsv:5.5.2'
 
     flywayMigration 'org.postgresql:postgresql:42.2.14'
     jooqGenerator 'org.postgresql:postgresql:42.2.14'
