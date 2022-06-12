@@ -1,8 +1,6 @@
 
 plugins {
     id 'java'
-    id 'org.flywaydb.flyway' version '6.5.6'
-    id 'nu.studer.jooq' version '6.0.1'
     id "io.freefair.lombok" version "6.3.0"
 }
 
@@ -13,10 +11,6 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    flywayMigration
-}
-
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.17.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.1'
@@ -24,69 +18,12 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'org.thejavaguy:rng:0.2.0'
 
-    flywayMigration 'org.postgresql:postgresql:42.2.14'
-    jooqGenerator 'org.postgresql:postgresql:42.2.14'
+
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
 
-flyway {
-    configurations = ['flywayMigration']
-    url = 'jdbc:postgresql://localhost:5432/language_generator_template'
-    user = 'language_data_api_user'
-    password = ''
-}
-
 test {
     useJUnitPlatform()
-}
-
-jooq {
-    configurations {
-        main {
-            generationTool {
-                logging = org.jooq.meta.jaxb.Logging.WARN
-                jdbc {
-                    driver = 'org.postgresql.Driver'
-                    url = flyway.url
-                    user = flyway.user
-                    password = flyway.password
-                }
-                generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
-                    database {
-                        name = 'org.jooq.meta.postgres.PostgresDatabase'
-                        includes = '.*'
-                        excludes = '''
-                        flyway_schema_history
-                        '''
-                        inputSchema = 'public'
-                    }
-                    target {
-                        packageName = 'language_generator.persistence.entity'
-                        directory = 'src/main/java/language_generator/persistence/entity'
-                    }
-                }
-            }
-        }
-    }
-}
-
-// configure jOOQ task such that it only executes when something has changed that potentially affects the generated JOOQ sources
-// - the jOOQ configuration has changed (Jdbc, Generator, Strategy, etc.)
-// - the classpath used to execute the jOOQ generation tool has changed (jOOQ library, database driver, strategy classes, etc.)
-// - the schema files from which the schema is generated and which is used by jOOQ to generate the sources have changed (scripts added, modified, etc.)
-tasks.named('generateJooq').configure {
-    // ensure database schema has been prepared by Flyway before generating the jOOQ sources
-    dependsOn tasks.named('flywayMigrate')
-
-    // declare Flyway migration scripts as inputs on the jOOQ task
-    inputs.files(fileTree('src/main/resources/db/migration'))
-            .withPropertyName('migrations')
-            .withPathSensitivity(PathSensitivity.RELATIVE)
-
-    // make jOOQ task participate in incremental builds and build caching
-    allInputsDeclared = true
-    outputs.cacheIf { true }
 }
