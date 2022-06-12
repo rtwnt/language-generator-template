@@ -17,8 +17,7 @@ dependencies {
     implementation 'com.opencsv:opencsv:5.5.2'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'org.thejavaguy:rng:0.2.0'
-
-
+    implementation 'com.squareup:javapoet:1.13.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
